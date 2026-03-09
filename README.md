@@ -106,7 +106,7 @@ GROQ_API_KEY=gsk_your_key_here
 ### 5. Run the app
 
 ```bash
-streamlit run summarizer_app.py
+streamlit run app.py
 ```
 
 Open [http://localhost:8501](http://localhost:8501) in your browser.
