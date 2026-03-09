@@ -74,7 +74,7 @@ Multiple URLs → individual FAISS indexes → `merge_from()` → unified index 
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/ai-content-analyst.git
+git clone https://github.com/muneebaumarr/AI-Content-Analyst.git
 cd ai-content-analyst
 ```
 
@@ -127,7 +127,7 @@ Open [http://localhost:8501](http://localhost:8501) in your browser.
 
 1. Push this repo to GitHub
 2. Go to [share.streamlit.io](https://share.streamlit.io) and sign in with GitHub
-3. Click **New app** → select this repo → set main file to `summarizer_app.py`
+3. Click **New app** → select this repo → set main file to `app.py`
 4. Add `GROQ_API_KEY` under **Advanced settings → Secrets**
 5. Click **Deploy** — you'll get a public URL in ~2 minutes
 
@@ -137,7 +137,7 @@ Open [http://localhost:8501](http://localhost:8501) in your browser.
 
 ```
 ai-content-analyst/
-├── summarizer_app.py   # Main application (single file)
+├── app.py   # Main application (single file)
 ├── requirements.txt    # Python dependencies
 ├── .env.example        # Environment variable template
 ├── .gitignore
@@ -164,6 +164,6 @@ MIT — free to use, modify, and distribute.
 
 ## 🙋 Author
 
-Built by **[Your Name]** · [LinkedIn](https://linkedin.com/in/yourprofile) · [GitHub](https://github.com/yourusername)
+Built by **Muneeba** ·  · [GitHub](https://github.com/muneebaumarr)
 
 > ⭐ Star this repo if you found it useful!
