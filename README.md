@@ -13,7 +13,7 @@
 
 ## 🔗 Live Demo
 
-👉 **[your-app.streamlit.app](https://your-app.streamlit.app)** ← replace after deploying
+👉 **https://ai-content-analyst-by7rtzpzrecamo2jlu5kvi.streamlit.app/** ← replace after deploying
 
 ---
 
