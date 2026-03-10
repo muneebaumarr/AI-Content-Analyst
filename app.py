@@ -12,7 +12,7 @@ Features:
 Dependencies:
     pip install streamlit langchain-core langchain-groq langchain-community
                 langchain-text-splitters langchain-huggingface python-dotenv
-                validators youtube-transcript-api unstructured requests
+                validators youtube-transcript-api requests beautifulsoup4
                 fpdf2 python-docx faiss-cpu sentence-transformers
 """
 
@@ -31,7 +31,8 @@ from langchain_core.prompts import PromptTemplate
 from langchain_core.documents import Document
 from langchain_groq import ChatGroq
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_community.document_loaders import UnstructuredURLLoader
+import requests
+from bs4 import BeautifulSoup
 from langchain_community.vectorstores import FAISS
 from langchain_huggingface import HuggingFaceEmbeddings
 from youtube_transcript_api import YouTubeTranscriptApi
@@ -172,21 +173,34 @@ def load_documents(url: str) -> list[Document]:
             return _load_youtube(url)
 
         logger.info("Loading web content: %s", url)
-        loader = UnstructuredURLLoader(
-            urls=[url],
-            ssl_verify=False,
-            headers={
-                "User-Agent": (
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                    "AppleWebKit/537.36 (KHTML, like Gecko) "
-                    "Chrome/120.0 Safari/537.36"
-                )
-            },
-        )
-        docs = loader.load()
-        if not docs:
-            raise ValueError("No content could be extracted from the provided URL.")
-        return docs
+        headers = {
+            "User-Agent": (
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) "
+                "Chrome/120.0 Safari/537.36"
+            )
+        }
+        response = requests.get(url, headers=headers, timeout=15, verify=False)
+        response.raise_for_status()
+
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        # Remove navigation, scripts, styles, footers — keep only readable content
+        for tag in soup(["script", "style", "nav", "footer", "header", "aside", "form"]):
+            tag.decompose()
+
+        # Prefer <article> or <main> if available, else fall back to <body>
+        main = soup.find("article") or soup.find("main") or soup.find("body")
+        text = main.get_text(separator="\n", strip=True) if main else soup.get_text(separator="\n", strip=True)
+
+        # Collapse blank lines
+        lines = [l.strip() for l in text.splitlines() if l.strip()]
+        clean_text = "\n".join(lines)
+
+        if not clean_text:
+            raise ValueError("No readable text found on this page.")
+
+        return [Document(page_content=clean_text, metadata={"source": url})]
 
     except (ValueError, RuntimeError):
         raise
