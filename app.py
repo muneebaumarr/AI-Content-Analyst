@@ -481,6 +481,13 @@ def _process_new_url(url: str, api_key: str) -> None:
             chunks = split_documents(docs)
             st.write(f"   → {len(chunks)} chunk(s)")
 
+            if not chunks:
+                raise ValueError(
+                    "No text could be extracted from this URL. "
+                    "The page may require JavaScript to render, or block scrapers. "
+                    "Try a direct article or blog link instead."
+                )
+
             st.write("🤖 Summarizing…")
             llm = get_llm(api_key)
             summary = run_map_reduce(llm, chunks)
